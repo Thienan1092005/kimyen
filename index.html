@@ -1,6 +1,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <HTML>
  <HEAD>
+  <meta
+    property="og:image" content="https://www.facebook.com/photo/?fbid=1166678957605768&set=pcb.1166679414272389"
+  >
   <TITLE> MINH IT </TITLE>
   <META NAME="Generator" CONTENT="EditPlus">
   <META NAME="Author" CONTENT="">
@@ -109,7 +112,7 @@ var ParticlePool = (function() {
       firstActive = 0,
       firstFree   = 0,
       duration    = settings.particles.duration;
- 
+
   function ParticlePool(length) {
     // create and populate particle pool
     particles = new Array(length);
@@ -118,7 +121,7 @@ var ParticlePool = (function() {
   }
   ParticlePool.prototype.add = function(x, y, dx, dy) {
     particles[firstFree].initialize(x, y, dx, dy);
-   
+
     // handle circular queue
     firstFree++;
     if (firstFree   == particles.length) firstFree   = 0;
@@ -127,7 +130,7 @@ var ParticlePool = (function() {
   };
   ParticlePool.prototype.update = function(deltaTime) {
     var i;
-   
+
     // update active particles
     if (firstActive < firstFree) {
       for (i = firstActive; i < firstFree; i++)
@@ -139,14 +142,14 @@ var ParticlePool = (function() {
       for (i = 0; i < firstFree; i++)
         particles[i].update(deltaTime);
     }
-   
+
     // remove inactive particles
     while (particles[firstActive].age >= duration && firstActive != firstFree) {
       firstActive++;
       if (firstActive == particles.length) firstActive = 0;
     }
-   
-   
+
+
   };
   ParticlePool.prototype.draw = function(context, image) {
     // draw active particles
@@ -171,7 +174,7 @@ var ParticlePool = (function() {
       particles = new ParticlePool(settings.particles.length),
       particleRate = settings.particles.length / settings.particles.duration, // particles/sec
       time;
- 
+
   // get point on heart with -PI <= t <= PI
   function pointOnHeart(t) {
     return new Point(
@@ -179,7 +182,7 @@ var ParticlePool = (function() {
       130 * Math.cos(t) - 50 * Math.cos(2 * t) - 20 * Math.cos(3 * t) - 10 * Math.cos(4 * t) + 25
     );
   }
- 
+
   // creating the particle image using a dummy canvas
   var image = (function() {
     var canvas  = document.createElement('canvas'),
@@ -212,20 +215,20 @@ var ParticlePool = (function() {
     image.src = canvas.toDataURL();
     return image;
   })();
- 
+
   // render that thing!
   function render() {
     // next animation frame
     requestAnimationFrame(render);
-   
+
     // update time
     var newTime   = new Date().getTime() / 1000,
         deltaTime = newTime - (time || newTime);
     time = newTime;
-   
+
     // clear canvas
     context.clearRect(0, 0, canvas.width, canvas.height);
-   
+
     // create new particles
     var amount = particleRate * deltaTime;
     for (var i = 0; i < amount; i++) {
@@ -233,19 +236,19 @@ var ParticlePool = (function() {
       var dir = pos.clone().length(settings.particles.velocity);
       particles.add(canvas.width / 2 + pos.x, canvas.height / 2 - pos.y, dir.x, -dir.y);
     }
-   
+
     // update and draw particles
     particles.update(deltaTime);
     particles.draw(context, image);
   }
- 
+
   // handle (re-)sizing of the canvas
   function onResize() {
     canvas.width  = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
   }
   window.onresize = onResize;
- 
+
   // delay rendering bootstrap
   setTimeout(function() {
     onResize();
